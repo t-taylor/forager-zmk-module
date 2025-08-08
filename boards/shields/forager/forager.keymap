@@ -8,38 +8,8 @@
 #define SYM  2
 #define ADJ  3
 
-#define AS(keycode) &as LS(keycode) keycode     // Autoshift Macro
-#define MEH LS(LC(LALT))
-
 / {
     behaviors {
-        as: auto_shift {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            tapping-term-ms = <250>;
-            require-prior-idle-ms = <100>;
-            flavor = "tap-preferred";
-            bindings = <&kp>, <&kp>;
-        };
-        ht: hold_tap {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            tapping-term-ms = <200>;
-            flavor = "balanced";
-            bindings = <&kp>, <&kp>;
-        };
-        sabk: shift_to_alt_backspace {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp BSPC>, <&kp LA(BSPC)>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-        smart_shift: smart_shift {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&sk LSHFT>, <&caps_word>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
         sym_bspc: left_thumb_hold_tap {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -70,11 +40,19 @@
         };
     };
 
-    conditional_layers {
-        compatible = "zmk,conditional-layers";
-        tri_layer {
-            if-layers = <1 2>;
-            then-layer = <3>;
+    combos {
+        compatible = "zmk,combos";
+        combo_del {
+            timeout-ms = <50>;
+            key-positions = <21 23>;
+            bindings = <&kp DEL>;
+            layers = <0>;
+        };
+        combo_tab {
+            timeout-ms = <50>;
+            key-positions = <26 28>;
+            bindings = <&kp TAB>;
+            layers = <0>;
         };
     };
 
@@ -83,39 +61,58 @@
 
         base {
             bindings = <
-            &kp Q           &kp W           &kp F           &kp P           &kp B                                           &kp J           &kp L           &kp U           &kp Y           AS(SEMI)
-            &kp A           &lhm LCTRL R    &lhm LALT S     &lhm LGUI T     &kp G                                           &kp M           &rhm LGUI N     &rhm LALT E     &rhm LCTRL I    &kp O
-            &kp Z           &kp X           &kp C           &kp D           &kp V                                           &kp K           &kp H           AS(COMMA)       AS(DOT)         AS(FSLH)
-                                                                            &sym_bspc 2 0   &smart_shift    &smart_shift    &lt NAV SPACE
-            >;
-        };
+                &kp Q &kp W &kp E &kp R &kp T &kp Y &kp U &kp I &kp O &kp P
 
-        nav {
-            bindings = <
-            &trans          &trans          &trans          &trans          &trans                                          &kp PAGE_UP     &kp LC(PG_UP)   &kp UP          &kp LC(PG_DN)   &kp DELETE
-            &trans          &kp LCTRL       &kp LALT        &kp LGUI        &trans                                          &kp PAGE_DOWN   &kp LEFT        &kp DOWN        &kp RIGHT       &kp BSLH
-            &trans          &trans          &trans          &trans          &trans                                          &trans          &kp HOME        &kp END         &kp LC(SPACE)   &kp LC(SPACE)
-                                                                            &mo SYM         &kp LSHFT       &trans          &trans
+                &lhm LGUI A &lhm LALT S &lhm LSFT D &lhm LCTL F &kp G
+                                    &kp H &rhm LCTL J &rhm LSFT K &rhm LALT L &rhm LGUI SEMI
+
+                &kp Z &kp X &kp C &kp V &kp B   &kp N &kp M  &kp COMMA &kp DOT &kp FSLH
+
+                &lt 2 BSPC &lt 1 ESC &lt 1 SPC &lt 2 RET
             >;
         };
 
         sym {
             bindings = <
-            AS(N1)          AS(N2)          AS(N3)          AS(N4)          AS(N5)                                          AS(N6)          AS(N7)          AS(N8)          AS(N9)          AS(N0)
-            AS(GRAVE)       &sk LCTRL       &sk LALT        &sk LGUI        &sk LC(LALT)                                    AS(BSLH)        AS(MINUS)       AS(EQUAL)       AS(LBKT)        AS(RBKT)
-            &trans          &trans          &trans          &trans          &trans                                          &trans          &trans          &trans          &trans          &kp ENTER
-                                                                            &trans          &trans          &kp LSHFT       &mo NAV
+                &kp N1    &kp N2    &kp N3    &kp N4      &kp N5      &kp N6    &kp N7    &kp N8    &kp N9     &kp N0
+                &kp EXCL  &kp AT    &kp HASH  &kp DOLLAR  &kp PRCNT   &kp CARET &kp AMPS  &kp STAR  &kp LPAR   &kp RPAR
+                &kp PIPE  &kp BSLH  &kp PLUS  &kp EQUAL   &kp TILDE   &kp GRAVE &kp LBRC  &kp RBRC  &kp LBKT   &kp RBKT
+                                                    &kp SQT &kp DQT &kp UNDER &kp MINUS
             >;
         };
 
-        adj {
+        nav {
             bindings = <
-            &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_CLR_ALL                                  &kp C_SLEEP     &trans          &trans          &kp C_BRI_DN    &kp C_BRI_UP
-            &studio_unlock  &trans          &trans          &trans          &trans                                          &trans          &trans          &trans          &kp C_VOL_DN    &kp C_VOL_UP
-            &bootloader     &trans          &trans          &trans          &trans                                          &trans          &trans          &trans          &trans          &bootloader
-                                                                            &trans          &trans          &trans          &trans
+                &trans &sys_reset &kp PGUP &trans &trans       &trans &kp C_VOL_DN &kp C_VOL_UP &trans &trans
+                &kp CAPS &kp HOME &kp PGDN &kp END &trans      &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans
+                &trans &trans &trans &trans &trans &kp C_PP    &trans &trans &trans &trans
+                                       &sl 3 &sl 3                 &sl 3 &sl 3
             >;
         };
+
+        func_layer {
+            bindings = <
+                &trans &trans      &bt BT_CLR    &sys_reset     &trans     &trans  &kp F1   &kp F2   &kp F3 &kp F4
+                &trans &bt BT_PRV  &bt BT_SEL 0  &bt BT_NXT &tog 4     &trans  &kp F5   &kp F6   &kp F7 &kp F8
+                &bootloader &trans &trans        &trans     &trans     &trans  &kp F9   &kp F10   &kp F11 &kp F12
+                                      &trans     &trans     &trans  &trans
+            >;
+        };
+
+        gaming_layer {
+// -----------------------------------------------------------------------------------------
+// |  Q  |  W  |  E  |  R  |  T   |  Y  |  U   |  I  |  O  |  P  |
+// |  A  |  S  |  D  |  F  |  G   |  H  |  J   |  K  |  L  |  ;  |
+// |  Z  |  X  |  C  |  V  |  B   |  N  |  M   |  ,  |  .  |  /  |
+//             | DEL | BSP |  ECS | ENT | SPC  | TAB |
+                     bindings = <
+&kp Q &kp W &kp E &kp R &kp T   &kp Y &kp U  &kp I   &kp O   &kp P
+&kp A &kp S &kp D &kp F &kp G   &kp H &kp J  &kp K   &kp L   &kp SEMI
+&kp Z &kp X &kp C &kp V &kp B   &kp N &kp M  &kp COMMA &kp DOT &kp FSLH
+      &kp DEL &kp BSPC &kp ESC  &kp RET &kp SPC &tog 4
+                        >;
+                };
+        
     };
 };
 
