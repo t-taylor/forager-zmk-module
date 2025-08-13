@@ -43,22 +43,6 @@
         };                                                                                                                                                                                                                                     
     };
 
-    combos {
-        compatible = "zmk,combos";
-        combo_del {
-            timeout-ms = <50>;
-            key-positions = <21 23>;
-            bindings = <&kp DEL>;
-            layers = <0>;
-        };
-        combo_tab {
-            timeout-ms = <50>;
-            key-positions = <26 28>;
-            bindings = <&kp TAB>;
-            layers = <0>;
-        };
-    };
-
     keymap {
         compatible = "zmk,keymap";
 
